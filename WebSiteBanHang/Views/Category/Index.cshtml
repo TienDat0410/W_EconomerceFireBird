@@ -1,0 +1,37 @@
+﻿@model IEnumerable<WebSiteBanHang.Models.Category>
+
+<h2>Categories</h2>
+
+<p>
+    <a asp-action="Add">Create New</a>
+</p>
+
+@if (Model != null && Model.Any())
+{
+    // Access Model properties inside this block
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                    <td>
+                        <a asp-action="Display" asp-route-id="@category.Id">Chi Tiết</a> |
+                        <a asp-action="Edit" asp-route-id="@category.Id">Sửa</a> |
+                        <a asp-action="Delete" asp-route-id="@category.Id">Xóa</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No products found.</p>
+        }
