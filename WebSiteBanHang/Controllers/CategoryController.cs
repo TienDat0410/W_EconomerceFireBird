@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WebSiteBanHang.Interfaces;
 using WebSiteBanHang.Models;
 
 namespace WebSiteBanHang.Controllers {
+    [Authorize(Roles = "Admin")]
     public class CategoryController : Controller {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;

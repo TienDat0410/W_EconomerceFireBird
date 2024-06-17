@@ -1,5 +1,6 @@
 # Visual Studio / Visual Studio Code
 .vscode/
+.vs/
 .vs/WebSiteBanHang/FileContentIndex/
 *.suo
 *.ntvs*

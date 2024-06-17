@@ -6,6 +6,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 
 namespace WebSiteBanHang.Controllers {
+    [Authorize(Roles = "Admin")]
     public class ProductController : Controller {
         private readonly IProductRepository _productRepository;
         private readonly ICategoryRepository _categoryRepository;
@@ -21,11 +22,7 @@ namespace WebSiteBanHang.Controllers {
             var products = await _productRepository.GetAllAsync();
             return View(products);
 
-
-
-
         }
-
 
         // Hiển thị form thêm sản phẩm mới
 
@@ -35,7 +32,6 @@ namespace WebSiteBanHang.Controllers {
 
             return View();
         }
-
         // Xử lý thêm sản phẩm mới
         [HttpPost]
         public async Task<IActionResult> Add(Product product) {

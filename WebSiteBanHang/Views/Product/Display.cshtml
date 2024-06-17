@@ -1,13 +1,24 @@
 ﻿@model WebSiteBanHang.Models.Product
 
+@{
+    ViewData["Title"] = Model.Name;
+}
 <h2>@Model.Name</h2>
 
 <div>
-    <h3>Price: @Model.Price</h3>
+    <h3>Price: @Model.Price.ToString("n0") VND</h3>
     <p>@Model.Description</p>
     @if (!string.IsNullOrEmpty(Model.ImageUrl)) {
         <img src="@Model.ImageUrl" alt="Product Image" style="max-width: 200px;" />
     }
+    <form asp-action="AddToCart" asp-controller="Cart" method="post">
+        <input type="hidden" name="productId" value="@Model.Id" />
+        <div class="form-group">
+            <label for="quantity">Quantity</label>
+            <input type="number" name="quantity" id="quantity" value="1" min="1" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Add to Cart</button>
+    </form>
 </div>
 
 <a asp-action="Index">Back to List</a>

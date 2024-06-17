@@ -1,0 +1,48 @@
+﻿@model WebSiteBanHang.Models.Cart
+
+@{
+    ViewData["Title"] = "Your Cart";
+}
+
+<h2>Your Cart</h2>
+
+@if (Model == null || !Model.CartItems.Any())
+{
+    <div class="alert alert-info" role="alert">
+        Your cart is empty.
+    </div>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.CartItems)
+            {
+                <tr>
+                    <td>@item.Product.Name</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Product.Price.ToString("n0") VND</td>
+                    <td>@((item.Product.Price * item.Quantity).ToString("n0")) VND</td>
+                    <td>
+                        <form asp-action="RemoveFromCart" method="post">
+                            <input type="hidden" name="productId" value="@item.ProductId" />
+                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-end">
+        <a asp-controller="Checkout" asp-action="Index" class="btn btn-success">Proceed to Checkout</a>
+    </div>
+}
