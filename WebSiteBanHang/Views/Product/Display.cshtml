@@ -3,22 +3,32 @@
 @{
     ViewData["Title"] = Model.Name;
 }
-<h2>@Model.Name</h2>
 
-<div>
-    <h3>Price: @Model.Price.ToString("n0") VND</h3>
-    <p>@Model.Description</p>
-    @if (!string.IsNullOrEmpty(Model.ImageUrl)) {
-        <img src="@Model.ImageUrl" alt="Product Image" style="max-width: 200px;" />
-    }
-    <form asp-action="AddToCart" asp-controller="Cart" method="post">
-        <input type="hidden" name="productId" value="@Model.Id" />
-        <div class="form-group">
-            <label for="quantity">Quantity</label>
-            <input type="number" name="quantity" id="quantity" value="1" min="1" class="form-control" />
+<div class="container product-details">
+    <div class="row">
+        <div class="col-md-6">
+            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl" alt="Product Image" class="img-fluid" />
+            }
         </div>
-        <button type="submit" class="btn btn-primary">Add to Cart</button>
-    </form>
+        <div class="col-md-6">
+            <h1 class="product-title">@Model.Name</h1>
+            <h3 class="product-price">@Model.Price.ToString("n0") VND</h3>
+            <p class="product-description">@Model.Description</p>
+            <form asp-action="AddToCart" asp-controller="Cart" method="post" class="add-to-cart-form">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <div class="form-group">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" name="quantity" id="quantity" value="1" min="1" class="form-control" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Add to Cart</button>
+            </form>
+        </div>
+    </div>
+    <a asp-action="Index" class="btn btn-secondary mt-3">Back to List</a>
 </div>
 
-<a asp-action="Index">Back to List</a>
+<!-- Ensure you include Bootstrap CSS and FontAwesome -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />

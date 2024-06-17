@@ -8,15 +8,17 @@
     <div class="row">
         @foreach (var product in Model)
         {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100">
-                    <img class="card-img-top" src="@product.ImageUrl" alt="@product.Name">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="image-container">
+                        <img class="card-img-top" src="@product.ImageUrl" alt="@product.Name" />
+                    </div>
                     <div class="card-body">
                         <h5 class="card-title">@product.Name</h5>
-                        <p class="card-text">@product.Description</p>
+                        <p class="card-text text-truncate-3">@product.Description</p>
                         <p class="card-text"><strong>@product.Price.ToString("n0") VND</strong></p>
                     </div>
-                    <div class="card-footer">
+                    <div class="card-footer d-flex justify-content-between">
                         <a href="@Url.Action("Display", "Product", new { id = product.Id })" class="btn btn-primary">View</a>
                         <form asp-controller="Cart" asp-action="AddToCart" method="post" class="d-inline">
                             <input type="hidden" name="productId" value="@product.Id" />
@@ -29,3 +31,6 @@
         }
     </div>
 </div>
+
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
