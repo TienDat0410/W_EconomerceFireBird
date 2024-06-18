@@ -1,32 +1,41 @@
-﻿@model WebSiteBanHang.ViewModels.ManageUserRolesViewModel
+﻿@model (Microsoft.AspNetCore.Identity.IdentityUser user, System.Collections.Generic.List<Microsoft.AspNetCore.Identity.IdentityRole> roles, System.Collections.Generic.IList<string> userRoles)
 
 @{
-    ViewData["Title"] = "Manage Roles for " + Model.UserName;
+    ViewData["Title"] = "Manage User Roles";
 }
 
 <h1>@ViewData["Title"]</h1>
 
-<form asp-action="Manage">
-    <input type="hidden" asp-for="UserId" />
-    <input type="hidden" asp-for="UserName" />
-    <div class="form-group">
-        <label asp-for="UserName" class="control-label"></label>
-        <input asp-for="UserName" class="form-control" disabled />
-    </div>
+<h2>@Model.user.UserName's Roles</h2>
 
-    <div class="form-group">
-        <div>
-            @foreach (var role in Model.Roles)
+<form asp-action="Manage">
+    <input type="hidden" name="userId" value="@Model.user.Id" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Role Name</th>
+                <th>Assigned</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var role in Model.roles)
             {
-                <div class="checkbox">
-                    <label>
-                        <input asp-for="@role.Selected" /> @role.RoleName
-                    </label>
-                </div>
+                <tr>
+                    <td>
+                        @role.Name
+                    </td>
+                    <td>
+                        <input type="checkbox" name="selectedRoles" value="@role.Name"
+                        @(Model.userRoles.Contains(role.Name) ? "checked" : "") />
+                    </td>
+                </tr>
             }
-        </div>
-    </div>
+        </tbody>
+    </table>
 
     <button type="submit" class="btn btn-primary">Save</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
 </form>

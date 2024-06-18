@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using WebSiteBanHang.ViewModels;
 
 [Authorize(Roles = "Admin")]
 public class UserRolesController : Controller
@@ -22,26 +21,15 @@ public class UserRolesController : Controller
     public async Task<IActionResult> Index()
     {
         var users = _userManager.Users.ToList();
-        var userRolesViewModel = new List<UserRolesViewModel>();
+        var userRoles = new List<(IdentityUser user, IList<string> roles)>();
 
         foreach (var user in users)
         {
-            var thisViewModel = new UserRolesViewModel
-            {
-                UserId = user.Id,
-                UserName = user.UserName,
-                Email = user.Email,
-                Roles = await GetUserRoles(user)
-            };
-            userRolesViewModel.Add(thisViewModel);
+            var roles = await _userManager.GetRolesAsync(user);
+            userRoles.Add((user, roles));
         }
 
-        return View(userRolesViewModel);
-    }
-
-    private async Task<List<string>> GetUserRoles(IdentityUser user)
-    {
-        return new List<string>(await _userManager.GetRolesAsync(user));
+        return View(userRoles);
     }
 
     public async Task<IActionResult> Manage(string userId)
@@ -54,37 +42,17 @@ public class UserRolesController : Controller
             return NotFound();
         }
 
-        var model = new ManageUserRolesViewModel
-        {
-            UserId = userId,
-            UserName = user.UserName
-        };
-
-        foreach (var role in _roleManager.Roles)
-        {
-            var roleViewModel = new RoleViewModel
-            {
-                RoleId = role.Id,
-                RoleName = role.Name
-            };
-            if (await _userManager.IsInRoleAsync(user, role.Name))
-            {
-                roleViewModel.Selected = true;
-            }
-            else
-            {
-                roleViewModel.Selected = false;
-            }
-            model.Roles.Add(roleViewModel);
-        }
+        var roles = _roleManager.Roles.ToList();
+        var userRoles = await _userManager.GetRolesAsync(user);
+        var model = (user, roles, userRoles);
 
         return View(model);
     }
 
     [HttpPost]
-    public async Task<IActionResult> Manage(ManageUserRolesViewModel model)
+    public async Task<IActionResult> Manage(string userId, List<string> selectedRoles)
     {
-        var user = await _userManager.FindByIdAsync(model.UserId);
+        var user = await _userManager.FindByIdAsync(userId);
 
         if (user == null)
         {
@@ -97,14 +65,20 @@ public class UserRolesController : Controller
         if (!result.Succeeded)
         {
             ModelState.AddModelError("", "Cannot remove user existing roles");
+            var rolesList = _roleManager.Roles.ToList();
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var model = (user, rolesList, userRoles);
             return View(model);
         }
 
-        result = await _userManager.AddToRolesAsync(user, model.Roles.Where(x => x.Selected).Select(y => y.RoleName));
+        result = await _userManager.AddToRolesAsync(user, selectedRoles);
 
         if (!result.Succeeded)
         {
             ModelState.AddModelError("", "Cannot add selected roles to user");
+            var rolesList = _roleManager.Roles.ToList();
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var model = (user, rolesList, userRoles);
             return View(model);
         }
 
